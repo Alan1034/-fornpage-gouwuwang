@@ -6,7 +6,7 @@ body .row {
 }
 body .top_coudan {
   height: 50px;
-  background-color: #ff841d;
+  background-color: #1df0ff;
 }
 body .top_coudan h4 {
   font-family: inherit;
@@ -143,7 +143,7 @@ body .goods_coudan .goods_background_coudan .other_coudan {
 }
 body .goods_coudan .goods_background_coudan .other_coudan .price_goods_coudan {
   float: left;
-  color: #f8601d;
+  color: #1d92ff;
   font-size: 20px;
 }
 body .goods_coudan .goods_background_coudan .other_coudan .btn_coudan {
@@ -151,7 +151,7 @@ body .goods_coudan .goods_background_coudan .other_coudan .btn_coudan {
   font-size: 14px;
   color: #FFFFFF;
   border-radius: 3px;
-  background-color: #ff9501;
+  background-color: #1d92ff;
   padding: 4px 10px;
   text-decoration: none;
   display: inline-block;
