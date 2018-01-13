@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,
+    maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="" href="./CSS/bootstrap.css">
+    <link rel="stylesheet" type="" href="./CSS/coudanpin.css">
+    <style>
+
+    </style>
+    <script src="./JS/jquery.js"></script>
+    <script src="./JS/bootstrap.js"></script>
+    <script src="./JS/template.js"></script>
+    <script src="./JS/template-native.js"></script>
+    <script src="./JS/logic.js"></script>
+
+</head>
+
+<body>
+    <div class="row top_coudan">
+        <h4>凑单品</h4>
+    </div>
+    <div class="row chose_coudan">
+        <div class="hd">
+            <div class="chose_coudan_div">
+                <a href="javascript:;" class="chose_shop_coudan"></a>
+                <a href="javascript:;" class="chose_place_coudan"></a>
+                <a href="javascript:;" class="chose_price_coudan">全部价格</a>
+                <a href="javascript:;" class=""></a>
+            </div>
+            <i><img src="./icon/Category.png" alt=""></i>
+        </div>
+
+    </div>
+    <div class="row title_coudan">
+        <div class="col-xs-2 shop_coudan"></div>
+        <div class="col-xs-2 place_coudan"></div>
+        <div class="col-xs-2 price_coudan"></div>
+        <div class="col-xs-2"></div>
+    </div>
+    <div class="row goods_box_coudan">
+
+
+</body>
+<!-- 商店开始 -->
+<script type="text/html" id="navTpl">
+    <% for(var i=0;i<result.length;i++) { %>
+        <a href=" <%= 'javascript:;' %> ">
+            <%= result[i].shopName %>
+                <input type="hidden" name="shopId" value=" <%= result[i].shopId %> " class="shopId_coudan">
+        </a>
+
+        <% } %>
+</script>
+<script type="text/html" id="navshop">
+    <%= result[0].shopName %>
+</script>
+</script>
+<!-- 商店结束 -->
+<!-- 地址开始 -->
+<script type="text/html" id="navplace_menu">
+    <% for(var i=0;i<result.length;i++) { %>
+        <a href=" <%= 'javascript:;' %> ">
+            <%= result[i].areaName %>
+                <input type="hidden" name="areaId" value=" <%= result[i].areaId %> " class="areaId_coudan">
+        </a>
+        <% } %>
+</script>
+<script type="text/html" id="navplace">
+    <%= result[0].areaName %>
+</script>
+<!-- 地址结束 -->
+<!-- 商品开始 -->
+<script type="text/html" id="navgoods">
+    <% for(var i=0;i<result.length;i++) { %>
+        <div class="col-xs-3 goods_coudan">
+            <div class="goods_background_coudan">
+                <a href=" <%= 'http://item.m.jd.com/ware/view.action?wareId=1274360' %> " class="goods_images_coudan">
+                    <div class="pic_coudan"><img src=" <%= result[i].productImg %> "></div>
+                    <div class="text_coudan">
+                        <%= result[i].productName %>
+                    </div>
+                    <div class="other_coudan">
+                        <div class="price_goods_coudan">
+                            <%= result[i].productPrice %>
+                        </div>
+                        <div class="btn_coudan">去凑单</div>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <% } %>
+</script>
+<!-- 商品结束 -->
+
+</html>
+<script>
+    // 店名生成开始
+    $(function() {
+        $.ajax({
+            url: "http://157.122.54.189:9090/api/getgsshop",
+            type: "get",
+            success: function(data) {
+                // console.log(data);
+                var html = template("navTpl", data);
+                // console.log(html);
+                $(".shop_coudan").html(html);
+                $(".shop_coudan").hide();
+                var shopName = template("navshop", data);
+                $(".chose_shop_coudan").html(shopName);
+                $(".shop_coudan").children().click(function() {
+                    // console.log($(this).html())
+                    var shopName = $(this).html();
+                    $(".chose_shop_coudan").html(shopName);
+                    shopId = $(this).children().val();
+                    goodscome_coudan();
+
+                    // var shopName = template("navshop1", data);
+                    // $(".chose_shop_coudan").html(shopName);
+
+                })
+            },
+            error: function(errorObj) {
+
+            }
+        })
+    });
+
+    // console.log(shopId);
+    // 店名生成结束
+    // 地址生成开始
+    $(function() {
+        $.ajax({
+            url: "http://157.122.54.189:9090/api/getgsshoparea",
+            type: "get",
+            success: function(data) {
+                // console.log(data);
+                var placelist = template("navplace_menu", data);
+                $(".place_coudan").html(placelist);
+                $(".place_coudan").hide();
+                var place = template("navplace", data).split("（");
+                $(".chose_place_coudan").html(place[0]);
+                $(".place_coudan").children().click(function() {
+                    // console.log($(this).children().val());
+                    var place = $(this).html().split("（");
+                    // console.log(place[0]);
+                    $(".chose_place_coudan").html(place[0]);
+                    areaId = $(this).children().val();
+                    goodscome_coudan();
+                })
+            },
+            error: function(errorObj) {
+
+            }
+        })
+    });
+
+    // 地址生成结束
+    // 商品生成开始
+    shopId = 0
+    areaId = 0
+    goodscome_coudan();
+
+    function goodscome_coudan() {
+        $(function() {
+            // var y = y || 0;
+            console.log();
+            $.ajax({
+                url: "http://157.122.54.189:9090/api/getgsproduct",
+                type: "get",
+                data: {
+                    shopid: shopId,
+                    areaid: areaId,
+                },
+                success: function(data) {
+                    // console.log(data);
+                    var navgoods_coudan = template("navgoods", data);
+                    $(".goods_box_coudan").html(navgoods_coudan);
+
+                },
+                error: function(errorObj) {
+
+                }
+            })
+        });
+    }
+
+    // 商品生成结束
+    // 标题点击事件开始
+    $(".chose_shop_coudan").click(function() {
+        $(".shop_coudan").slideToggle();
+        $(".shop_coudan").siblings().hide();
+
+    });
+    $(".chose_place_coudan").click(function() {
+        $(".place_coudan").slideToggle();
+        $(".place_coudan").siblings().hide();
+    });
+    $(".chose_price_coudan").click(function() {
+        $(".price_coudan").slideToggle();
+        $(".price_coudan").siblings().hide();
+    });
+
+    // 标题点击事件结束
+    // 下拉菜单点击事件开始
+    // console.log($(".shopId_coudan").val());
+    // console.log($(".shopId_coudan").eq(1));
+
+    // console.log(y);
+    // 下拉菜单点击事件结束
+</script>
